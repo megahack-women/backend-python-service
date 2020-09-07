@@ -18,11 +18,11 @@ class HelloWord(APIView):
 
 class PersonAPI(APIView):
 	def post(self, request):
-		cpf		= request.POST.get('cpf')		
-		finance = request.POST.get('finance')
+		cpf		= request.data.get('cpf')		
+		finance = request.data.get('finance')
 
 		if not all([cpf, finance]):
-			return Response({'success': False, 'detail':f'Parâmetros insuficientes'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'success': False, 'detail':f'Parâmetros insuficientes {cpf} {finance}'}, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
 			int(cpf)
