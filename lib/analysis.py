@@ -3,6 +3,7 @@ from api.models import *
 from django.db import transaction
 
 from decouple import config, Csv
+from decimal import Decimal, ROUND_DOWN
 import os, requests, json, random
 
 from pynubank import Nubank
@@ -52,7 +53,7 @@ def AnalysisSerasa(cpf):
 
 def AnalysisGroup(scores=list):
     divider = 0
-    
+
     for s in scores:
         if s >= 700:
             percentage = (((s-1000)/1000)*-3)
@@ -66,11 +67,11 @@ def AnalysisGroup(scores=list):
     return total
 
 def CalcLoanPayment(value):
-    payment_max = float(value)*0.5
-    payment_min = float(value)*0.20
+    payment_max = Decimal(float(value)*0.5).quantize(Decimal('.01'), rounding=ROUND_DOWN)
+    payment_min = Decimal(float(value)*0.20).quantize(Decimal('.01'), rounding=ROUND_DOWN)
     
-    loan_max = payment_max*24
-    loan_min = payment_min*10
+    loan_max = Decimal(payment_max*24).quantize(Decimal('.01'), rounding=ROUND_DOWN)
+    loan_min = Decimal(payment_min*10).quantize(Decimal('.01'), rounding=ROUND_DOWN)
 
 
     response = {

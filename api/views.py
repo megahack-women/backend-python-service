@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from decimal import Decimal, ROUND_DOWN
 import requests
 import json
 
@@ -29,6 +30,8 @@ class PersonAPI(APIView):
 			finance = float(finance)
 		except:
 			return Response({'success': False, 'detail':'Parâmetros incorretos'}, status=status.HTTP_400_BAD_REQUEST)
+
+		finance = Decimal(finance).quantize(Decimal('.01'), rounding=ROUND_DOWN)
 
 		try:
 			person = Person.objects.get(cpf=cpf)
