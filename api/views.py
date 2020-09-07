@@ -22,7 +22,7 @@ class PersonAPI(APIView):
 		finance = request.POST.get('finance')
 
 		if not all([cpf, finance]):
-			return Response({'success': False, 'detail':'Parâmetros insuficientes'}, status=status.HTTP_400_BAD_REQUEST)
+			return Response({'success': False, 'detail':f'Parâmetros insuficientes {cpf} {finance}'}, status=status.HTTP_400_BAD_REQUEST)
 
 		try:
 			int(cpf)
