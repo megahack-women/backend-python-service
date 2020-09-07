@@ -22,7 +22,7 @@ class Person(models.Model):
     phone           = models.CharField(max_length=20, null=True)
     date_of_birth   = models.DateField(null=True)
     finance         = models.DecimalField(max_digits=10, decimal_places=2)
-    informal_worker = models.BooleanField(default=True)
+    informal_worker = models.CharField(max_length=20)
     receives_payment = models.CharField(max_length=200, null=True)
     card_companies  = models.CharField(max_length=200, null=True)
     token_myid      = models.CharField(max_length=100, null=True)

@@ -26,6 +26,7 @@ class PersonAPI(APIView):
 
 		try:
 			int(cpf)
+			finance = float(finance)
 		except:
 			return Response({'success': False, 'detail':'Parâmetros incorretos'}, status=status.HTTP_400_BAD_REQUEST)
 
