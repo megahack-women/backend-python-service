@@ -18,6 +18,7 @@ class HelloWord(APIView):
 
 class PersonAPI(APIView):
 	def post(self, request):
+		return Response(request.data)
 		cpf		= request.POST.get('cpf')		
 		finance = request.POST.get('finance')
 
