@@ -128,7 +128,6 @@ class GroupAPI(APIView):
 				scores.append(int(contact.score_serasa))
 				total_finances += contact.person.finance
 			except Exception as e:
-				return Response(g)
 				continue
 
 			insert_contact = ContactPerson.objects.create(person=person, contact=contact.person)
@@ -145,7 +144,7 @@ class GroupAPI(APIView):
 		obj.save()
 		
 		calculators = CalcLoanPayment(total_finances)
-		calculators.update({'group': contacts, 'finances': total_finances})
+		calculators.update({'names': contacts, 'finances': total_finances, 'score_serasa': analysis_group})
 
 		response = {'success': True, 'calculators_group': calculators}
 
