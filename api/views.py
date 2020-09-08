@@ -89,6 +89,7 @@ class PersonAPI(APIView):
 			person = Person.objects.get(cpf=cpf)
 
 			credit = CreditAnalysis.objects.create(person=person, score_serasa=analysis_serasa)
+			credit.save()
 		except Exception as e:
 			raise Exception(e)
 
@@ -103,12 +104,19 @@ class AnalysisNubank(APIView):
 
 
 class GroupAPI(APIView):
-	def post(self, request):
-		person	= request.POST.get('id')
-		group	= request.POST.getlist('group', [])
+	def post(self, request, id=None):
+		list_group	= request.data.get('group', [])
+		group = list_group.split(',')
 
-		if not all([person, person]):
+		if not all([group]):
 			return Response({'success': False, 'detail':'Parâmetros insuficientes'}, status=status.HTTP_400_BAD_REQUEST)
+
+		try:
+			person = Person.objects.get(pk=id)
+		except:
+			return Response({'success': False, 'detail':'Id do cliente não encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+		group.append(person.cpf)
 
 		scores = []
 		total_finances = 0
@@ -117,23 +125,27 @@ class GroupAPI(APIView):
 		for g in group:
 			try:
 				contact = CreditAnalysis.objects.get(person__cpf=g)
-				scores.insert(contact.score_serasa)
+				scores.append(int(contact.score_serasa))
 				total_finances += contact.person.finance
-			except:
+			except Exception as e:
+				return Response(g)
 				continue
 
 			insert_contact = ContactPerson.objects.create(person=person, contact=contact.person)
 			insert_contact.save()
 
-			contacts.insert(contact.person)
-		raise Exception(scores)
+			contacts.append(contact.person.nickname)
+		
 		analysis_group = AnalysisGroup(scores)
 		
-		obj = CreditAnalysis.objects.get(person__pk=person)
-		obj.update(analysis_group=analysis_group, finance_group=total_finances)
+		obj = CreditAnalysis.objects.get(person=person)
+		
+		obj.analysis_group=analysis_group
+		obj.finance_group=total_finances
+		obj.save()
 		
 		calculators = CalcLoanPayment(total_finances)
-		calculators.update({'group': contacts})
+		calculators.update({'group': contacts, 'finances': total_finances})
 
 		response = {'success': True, 'calculators_group': calculators}
 

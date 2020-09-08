@@ -55,10 +55,15 @@ def AnalysisGroup(scores=list):
     divider = 0
 
     for s in scores:
-        if s >= 700:
-            percentage = (((s-1000)/1000)*-3)
+        if s >= 800:
+            percentage = (((s-1000)/1000)*-5)
+
+            if percentage < 0.60:
+                percentage = 0.60
 
             divider += percentage
+        else:
+            divider = 1 + divider
 
     dividend = sum(scores)
 

@@ -6,5 +6,5 @@ urlpatterns = [
     path('', HelloWord.as_view()),
     path('person', PersonAPI.as_view()),
     path('person/<int:id>', PersonAPI.as_view()),
-    path('person/group', GroupAPI.as_view())
+    path('person/<int:id>/group', GroupAPI.as_view())
 ]
